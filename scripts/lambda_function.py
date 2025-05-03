@@ -24,6 +24,7 @@ def lambda_handler(event, context):
 
         #flattening the json
         df_new = pd.json_normalize(df_raw['items'])
+        df_new['id'] = df_new['id'].astype('int64')  # This converts the column to proper bigint
 
         wr_response = wr.s3.to_parquet(
             df=df_new,
@@ -40,4 +41,3 @@ def lambda_handler(event, context):
         print(e)
         print(f"Error getting object {object} from key {key}")
         raise e
-
