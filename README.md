@@ -3,6 +3,8 @@
 
 This is an End to End Data Engineering Project that helps imaginary client who is going to put Ad-Campaign online for thier product/services. My job is help them where to place their ads in the social media platforms to get better reach for thier products/services.
 I used YouTube dataset from Kaggle for my analysis and to build End to End ETL Pipeline.
+
+#### [Pipeline Image]
 ## Project Implementation
 
 ### Dataset Download
@@ -70,8 +72,39 @@ What next ??? Querying the data in Athena!!!!!!
 
 
 ### Data Querying in Athena
+Then, Attempt to query the json file data was done. But, the following error was happened :(.
+This error occurs due to the improper format of the json datasets. 
 
+#### [Error Image Placeholder]
 
+The Athena uses the inbuilt Json SerDe to serialise and deserialise the json for processing and querying. The library expects the json dataset to be in single line format like the 
+
+#### [Single line format image]
+
+But the error was removed by using one of the AWS service. Let's see what was that !.
+
+### Solving error using Lambda
+AWS Lambda is a service where we can write code for processing the data in any language and make it to run when any event happens.
+So, a small ETL will be done here to process th data into correct format and store the dataset into parquet format into another S3 bucket (Cleaned data).
+
+#### [Small ETL Pipeline Image]
+
+The code and configurations including environmental variables and creating layers were done.The code was made to run with an test event with an S3 put event. This was done to ensure and test whether the Lambda function code works correctly.The glue catalog along with the table was created itself by the code. But, the database was created to stored the table of the cleaned data.
+
+#### What does the lambda function code do ? 
+    1. Read the uploaded json file in the S3 bucket.
+    2. Normalised the json file into flat dataframe (took only required json objects) using the pandas.
+    3. Turned the data into parquet format and written into the another S3 bucket.
+    4. Along with this, glue data catalog was created for the data for querying in Athena.
+
+After this, the Athena query gave the results from the parquet dataset using the glue data catalog.
+
+#### [Image of Athena test query]
+
+Note: Glue data catalog is like a metadata to raw data stored in the S3. Athena can't directly use query to get the respective data from the S3 buckets.
+
+### Then What next ??
+The entire processs was not done. Testing was done on a single file. 
 
 
 
