@@ -18,7 +18,7 @@ spark = glueContext.spark_session
 job = Job(glueContext)
 job.init(args['JOB_NAME'], args)
 
-############################### Added by Darshil ###############################
+
 # Define the predicate for filtering based on region
 predicate_pushdown = "region in ('ca', 'gb', 'us')"
 
@@ -75,7 +75,6 @@ dropnullfields3 = DropNullFields.apply(
     transformation_ctx="dropnullfields3"
 )
 
-############################### Added by Darshil ###############################
 # Convert to DataFrame and perform UTF-8 normalization (optional)
 datasink1 = dropnullfields3.toDF().coalesce(1)
 

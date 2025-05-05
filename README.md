@@ -4,6 +4,8 @@
 This is an End to End Data Engineering Project that helps imaginary client who is going to put Ad-Campaign online for thier product/services. My job is help them where to place their ads in the social media platforms to get better reach for thier products/services.
 I used YouTube dataset from Kaggle for my analysis and to build End to End ETL Pipeline.
 
+### Data Architecture 
+
 #### [Pipeline Image]
 ## Project Implementation
 
@@ -106,5 +108,41 @@ Note: Glue data catalog is like a metadata to raw data stored in the S3. Athena 
 ### Then What next ??
 The entire processs was not done. Testing was done on a single file. 
 
+### Testing CSV files
+Next in the process of the project, I created another crawler for the s3 bucket where the csv datasets were lying as partitoned folder on region. With the help of the crawler, I got metadata for the csv files.
 
+Next, I tried to join the two data catalog of parquet (one json file) and the csv data catalog I created now.
+
+When I tried to join the both datasets using the ID, it gave me a error as both columns of ID are in different schema. For this, we can change this using the Athena Query itself. But changing the data itself is the best option which reduces unnecessary Athena Queries. So, I added the one line of code to change the datatype of the 'ID' column as 'bigint' while changing to parquet file format. It also refelected in the data catalog.
+
+### ETL Jobs 
+We have just tested the data on single files and not converted csv files into parquet. So, we are going to create ETL jobs for next processs.
+
+#### First ETL Job
+I turned the csv files into parquet file format with help of Glue ETL Jobs which was done by Pyspark Script.The script was in the 'scripts' folder.
+What will the ETL Pyspark code does ? 
+    1. Read data from S3 using Glue catalog(csv files) and takes only for 3 regions. 3 Regions were selected due to additional work of 'utf-8' formatting.
+    2. It was converted into Dynamic Dataframe for processing in the Pyspark code.
+    3. The correct schema will be applied on the dataframe.
+    4. converted to parquet files with partitioned key region.
+
+#### Before next ETL Job - Lambda Trigger creation
+The json files were not still converted to parquet files. I have converted only one file to parquet.To do that, I have a set an Lambda trigger which will run the previous lambda code whenever any creation events occurs in the specified s3 bucket. I deleted the Json files all and removed the one parquet file. Now, I upoloaded the all json files again. 
+
+The Lambda code was triggered for each json file upload and created parquet files in the buckets along with the data catalog.
+
+
+#### Second ETL Job - Final data creation
+
+[Second ETL Image]
+
+This ETL jobs was done using the Glue ELT Jobs visual editor. The data catalog for cleansed data both json and csv files were inner joined and put into another s3 bucket (Analytical bucket) and data catalog also created for the final data.
+
+
+### Dashboard creation
+The data was finally cleaned and put into final layer which was Analytical bucket. With the help of QuickSight in AWS, I created the Dashboard panels.The engagement percent was created in the QuickSight to make Dashboard visualisations better.
+
+[Panel 1 image]
+
+[Panel 2 image]
 
