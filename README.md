@@ -1,12 +1,13 @@
 
-# YouTube End to End Data Engineering Project
+# YouTube Data Analysis - End to End Data Engineering Project
 
 This is an End to End Data Engineering Project that helps imaginary client who is going to put Ad-Campaign online for thier product/services. My job is help them where to place their ads in the social media platforms to get better reach for thier products/services.
-I used YouTube dataset from Kaggle for my analysis and to build End to End ETL Pipeline.
+I used YouTube dataset from Kaggle for my final analysis to create the dashboard.
 
 ### Data Architecture 
 
-#### [Pipeline Image]
+![Image](https://github.com/user-attachments/assets/a1835bae-eeb4-4c95-8f47-4219d1e3fb6f)
+
 ## Project Implementation
 
 ### Dataset Download
@@ -68,6 +69,8 @@ Hurray!!! The file uploading part is done. Next step is using Glue Crawler in AW
 Before that, IAM role for Glue catalog with respective policies to read S3 buckets was created and assigned in IAM console.
 Then under Glue servicein AWS, an crawler was created to go through the data (Source: S3 bucket -> This was done is the configuration of the crawler) and the metadata was fetched.
 
+![Image](https://github.com/user-attachments/assets/3607e762-e170-4a6c-a768-4fc2e0ca527f)
+
 The data catalog was stored under a table in a database. That was created before the process.
 
 What next ??? Querying the data in Athena!!!!!!
@@ -77,11 +80,11 @@ What next ??? Querying the data in Athena!!!!!!
 Then, Attempt to query the json file data was done. But, the following error was happened :(.
 This error occurs due to the improper format of the json datasets. 
 
-#### [Error Image Placeholder]
+![Image](https://github.com/user-attachments/assets/c9e6078a-ea3c-4d51-bea8-6fdeb2cc119d)
 
 The Athena uses the inbuilt Json SerDe to serialise and deserialise the json for processing and querying. The library expects the json dataset to be in single line format like the 
 
-#### [Single line format image]
+![Image](https://github.com/user-attachments/assets/6cae6092-7b6a-4ea1-8242-68a829183ffa)
 
 But the error was removed by using one of the AWS service. Let's see what was that !.
 
@@ -89,7 +92,7 @@ But the error was removed by using one of the AWS service. Let's see what was th
 AWS Lambda is a service where we can write code for processing the data in any language and make it to run when any event happens.
 So, a small ETL will be done here to process th data into correct format and store the dataset into parquet format into another S3 bucket (Cleaned data).
 
-#### [Small ETL Pipeline Image]
+![Image](https://github.com/user-attachments/assets/86d3fb68-6c1e-405d-a14a-dfe5e337ba3b)
 
 The code and configurations including environmental variables and creating layers were done.The code was made to run with an test event with an S3 put event. This was done to ensure and test whether the Lambda function code works correctly.The glue catalog along with the table was created itself by the code. But, the database was created to stored the table of the cleaned data.
 
@@ -101,7 +104,7 @@ The code and configurations including environmental variables and creating layer
 
 After this, the Athena query gave the results from the parquet dataset using the glue data catalog.
 
-#### [Image of Athena test query]
+![Image](https://github.com/user-attachments/assets/0821524e-f322-47ef-990f-2d0fac5bd995)
 
 Note: Glue data catalog is like a metadata to raw data stored in the S3. Athena can't directly use query to get the respective data from the S3 buckets.
 
@@ -134,15 +137,21 @@ The Lambda code was triggered for each json file upload and created parquet file
 
 #### Second ETL Job - Final data creation
 
-[Second ETL Image]
+![Image](https://github.com/user-attachments/assets/392f305e-c7ef-4a55-b247-57c683a80638)
 
 This ETL jobs was done using the Glue ELT Jobs visual editor. The data catalog for cleansed data both json and csv files were inner joined and put into another s3 bucket (Analytical bucket) and data catalog also created for the final data.
 
+#### Why we need a analytical layer
+Because, we need to write the query to join the data from both the catalog every time. Instead, we can provide another layer (Analytical layer S3 bucket) for the final analysing purpose.
+
+![Image](https://github.com/user-attachments/assets/5b03c9c2-5656-47cc-b1c5-d8571e64b8a2)
 
 ### Dashboard creation
 The data was finally cleaned and put into final layer which was Analytical bucket. With the help of QuickSight in AWS, I created the Dashboard panels.The engagement percent was created in the QuickSight to make Dashboard visualisations better.
 
-[Panel 1 image]
+#### Panel 1 Dashboard
+![Image](https://github.com/user-attachments/assets/61b2dfe4-6c15-4f92-9a57-93309b83610d)
 
-[Panel 2 image]
 
+#### Panel 2 Dashboard
+![Image](https://github.com/user-attachments/assets/4e559ce5-b67f-4805-aa70-9d5d77d751ab)
